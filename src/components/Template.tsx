@@ -1,35 +1,67 @@
 import { MDXProvider } from "@mdx-js/react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { useSearchParams } from "react-router-dom";
 import Presentation from "../markdowns/2.3.mdx";
-import { snippet } from "../data/data";
+import ReactRouterIssue from "../markdowns/react-router-issue.mdx";
+import GoogleOauth from "../markdowns/google-oauth2.0.mdx";
 
-const CodeBlock = ({ className, ...properties }) => {
+interface CodeProps {
+  className?: string;
+  [key: string]: any;
+}
+
+function code({ className, ...properties }: CodeProps) {
   const match = /language-(\w+)/.exec(className || "");
   return match ? (
-    <SyntaxHighlighter language={match[1]} PreTag="div" {...properties} />
+    <SyntaxHighlighter
+      language={match[1]}
+      PreTag="div"
+      {...properties}
+      style={atelierCaveDark}
+      showLineNumbers
+    />
   ) : (
     <code className={className} {...properties} />
   );
-};
+}
 
 const Template = () => {
-  const components = {
-    code: CodeBlock,
-  };
+  const [searchParams, setSearchParams] = useSearchParams();
+  const blogs = searchParams.get("blogs");
 
   return (
     <div className="flex flex-col justify-start items-start space-y-3 isolate-tailwind prose  prose-a:text-blue-600 prose-lg max-w-none lg:w-2/3 ">
-      <MDXProvider components={components}>
-        <Presentation />
+      <div className="space-x-4 py-4">
+        <button
+          className="link link-info"
+          onClick={() => setSearchParams({ blogs: "googleoauth" })}
+        >
+          Google Oauth
+        </button>
+        <button
+          className="link link-info"
+          onClick={() => setSearchParams({ blogs: "presentation" })}
+        >
+          Presentation
+        </button>
+        <button
+          className="link link-info"
+          onClick={() => setSearchParams({ blogs: "react-router-issue" })}
+        >
+          React Router Issue
+        </button>
+      </div>
+
+      <MDXProvider>
+        {blogs === "react-router-issue" ? (
+          <ReactRouterIssue components={{ code }} />
+        ) : blogs === "googleoauth" ? (
+          <GoogleOauth components={{ code }} />
+        ) : (
+          <Presentation components={{ code }} />
+        )}
       </MDXProvider>
-      <SyntaxHighlighter
-        language="javascript"
-        style={atelierCaveDark}
-        showLineNumbers
-      >
-        {snippet}
-      </SyntaxHighlighter>
     </div>
   );
 };
