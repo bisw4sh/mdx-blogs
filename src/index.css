@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @layer components {
+  .isolate-tailwind {
+    h1 {
+      @apply text-4xl font-bold;
+    }
+    h2 {
+      @apply text-xl font-semibold;
+    }
+
+    ol {
+      @apply list-decimal list-inside;
+      li {
+        @apply marker:text-blue-700 marker:font-semibold;
+      }
+    }
+    code {
+      @apply bg-slate-400 opacity-95 text-white px-2 py-3 rounded-md;
+    }
+  }
+} */
