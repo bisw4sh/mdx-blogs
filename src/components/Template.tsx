@@ -3,8 +3,14 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useSearchParams } from "react-router-dom";
 import Presentation from "../markdowns/2.3.mdx";
-import ReactRouterIssue from "../markdowns/react-router-issue.mdx";
-import GoogleOauth from "../markdowns/google-oauth2.0.mdx";
+// import ReactRouterIssue from "../markdowns/react-router-issue.mdx";
+// import GoogleOauth from "../markdowns/google-oauth2.0.mdx";
+import { lazy, Suspense } from "react";
+
+const ReactRouterIssue = lazy(
+  () => import("../markdowns/react-router-issue.mdx")
+);
+const GoogleOauth = lazy(() => import("../markdowns/google-oauth2.0.mdx"));
 
 interface CodeProps {
   className?: string;
@@ -54,13 +60,29 @@ const Template = () => {
       </div>
 
       <MDXProvider>
-        {blogs === "react-router-issue" ? (
-          <ReactRouterIssue components={{ code }} />
-        ) : blogs === "googleoauth" ? (
-          <GoogleOauth components={{ code }} />
-        ) : (
-          <Presentation components={{ code }} />
-        )}
+        <Suspense
+          fallback={
+            <div className="flex w-full flex-col gap-4">
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-full"></div>
+            </div>
+          }
+        >
+          {blogs === "react-router-issue" ? (
+            <ReactRouterIssue components={{ code }} />
+          ) : blogs === "googleoauth" ? (
+            <GoogleOauth components={{ code }} />
+          ) : (
+            <Presentation components={{ code }} />
+          )}
+        </Suspense>
       </MDXProvider>
     </div>
   );
