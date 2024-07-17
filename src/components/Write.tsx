@@ -1,26 +1,21 @@
-import { Form, ActionFunctionArgs } from "react-router-dom";
+import { SetStateAction, Dispatch } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  console.log(formData);
-  return formData;
-};
-
-const Write = () => {
+const Write = ({
+  value,
+  setValue,
+}: {
+  value: string;
+  setValue: Dispatch<SetStateAction<string>>;
+}) => {
   return (
-    <>
-      <Form method="post" action="">
-        <textarea
-          name="post"
-          placeholder="Write the blog in markdown"
-          className="textarea textarea-bordered textarea-lg w-full max-w-xs"
-        ></textarea>
-        <button type="submit" className="btn btn-success">
-          Post
-        </button>
-      </Form>
-    </>
+    <ReactQuill
+      theme="snow"
+      value={value}
+      onChange={setValue}
+      className="w-full h-[10rem] rounded-md"
+    />
   );
 };
 
