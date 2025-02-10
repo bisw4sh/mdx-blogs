@@ -1,4 +1,4 @@
-export default function Error() {
+export default function ErrorPage() {
   return (
     <div className="min-h-screen bg-teal-100 flex justify-center items-center text-black text-4xl font-bold">
       Error has occured
