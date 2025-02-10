@@ -15,5 +15,5 @@ app.post("/api/save-mdx", save_mdx);
 
 // Start Server
 app.listen(PORT, () => {
-  console.log("Server is running on http://localhost:" + PORT);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
