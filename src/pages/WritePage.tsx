@@ -52,6 +52,7 @@ const WritePage = () => {
         </Form>
       </section>
       <section
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
         dangerouslySetInnerHTML={{ __html: value }}
         className="prose prose-a:text-blue-600 prose-md max-w-none w-full flex-1 p-[1rem] border-[1px] rounded-md"
       />
