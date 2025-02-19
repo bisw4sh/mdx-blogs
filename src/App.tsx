@@ -16,6 +16,7 @@ const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route path="main" element={<MainPage />} />
       <Route path="write" element={<WritePage />} action={writeAction} />
+      {/* <Route path="/post/:slug" element={<BlogPost />} /> */}
     </Route>
   )
 );
