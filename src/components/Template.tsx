@@ -4,12 +4,7 @@ import { atelierCaveDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useSearchParams } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-
-// Import Presentation as raw markdown
-import PresentationMarkdown from "../markdowns/2.3.mdx?raw";
-
+import PresentationMarkdown from "../markdowns/2.3.mdx";
 const ReactRouterIssue = lazy(
   () => import("../markdowns/react-router-issue.mdx")
 );
@@ -17,7 +12,7 @@ const GoogleOauth = lazy(() => import("../markdowns/google-oauth2.0.mdx"));
 
 interface CodeProps {
   className?: string;
-  children: string;
+  children?: React.ReactNode;
 }
 
 // Custom `code` component for syntax highlighting
@@ -75,7 +70,7 @@ const Template = () => {
           fallback={
             <div className="flex w-full flex-col gap-4">
               {Array.from({ length: 8 }).map((_, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                // biome-ignore lint/suspicious/noArrayIndexKey: shouldn't use index but no other option
                 <div key={index} className="skeleton h-4 w-full" />
               ))}
             </div>
@@ -86,12 +81,7 @@ const Template = () => {
           ) : blogs === "googleoauth" ? (
             <GoogleOauth components={{ code: CodeBlock }} />
           ) : (
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{ code: CodeBlock }}
-            >
-              {PresentationMarkdown}
-            </ReactMarkdown>
+            <PresentationMarkdown components={{ code: CodeBlock }} />
           )}
         </Suspense>
       </MDXProvider>
