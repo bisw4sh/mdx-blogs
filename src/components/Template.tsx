@@ -42,8 +42,14 @@ const Template = () => {
 
   // Find the selected blog
   const selectedPost = postLinks.find((post) => post.name === blogSlug);
-
-  const BlogComponent = selectedPost ? lazy(selectedPost.importer) : null;
+  const BlogComponent = selectedPost
+    ? lazy(
+        () =>
+          selectedPost.importer() as Promise<{
+            default: React.ComponentType<any>;
+          }>
+      )
+    : null;
 
   return (
     <div className="flex flex-col justify-start items-start space-y-3 isolate-tailwind prose prose-a:text-blue-600 prose-lg max-w-none lg:w-2/3">
