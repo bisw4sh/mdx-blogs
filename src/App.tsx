@@ -9,6 +9,7 @@ import ErrorPage from "./pages/Error";
 import Navbar from "./components/Navbar";
 import MainPage from "./pages/MainPage";
 import WritePage, { action as writeAction } from "./pages/WritePage";
+import Template from "./components/Template";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,7 +17,7 @@ const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route path="main" element={<MainPage />} />
       <Route path="write" element={<WritePage />} action={writeAction} />
-      {/* <Route path="/post/:slug" element={<BlogPost />} /> */}
+      <Route path="blog" element={<Template />} /> {/* Blog list page */}
     </Route>
   )
 );
