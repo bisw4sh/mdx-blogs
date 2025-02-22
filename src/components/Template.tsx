@@ -40,6 +40,7 @@ const Template = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [apiPosts, setApiPosts] = useState<string[]>([]);
   const [fetchedPost, setFetchedPost] = useState<{
+    data: any;
     code: string;
     frontmatter?: Record<string, string>;
   } | null>(null);
@@ -50,7 +51,7 @@ const Template = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch("/api/posts");
-        const data = await response.json();
+        const { data } = await response.json();
         if (data.posts && Array.isArray(data.posts)) {
           setApiPosts(data.posts);
         }
@@ -63,10 +64,10 @@ const Template = () => {
   }, []);
 
   const MDXContent = useMemo(() => {
-    if (fetchedPost?.code) {
+    if (fetchedPost?.data?.code) {
       try {
         // This evaluates the code and returns a React component
-        return getMDXComponent(fetchedPost.code);
+        return getMDXComponent(fetchedPost.data.code);
       } catch (error) {
         console.error("Error creating MDX component:", error);
         return null;
