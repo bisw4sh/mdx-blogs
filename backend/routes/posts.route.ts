@@ -33,7 +33,8 @@ router.get("/:slug", async (req: Request, res: Response) => {
     const { code, frontmatter } = await bundleMDX({
       source: mdxContent,
       mdxOptions(options) {
-        options.remarkPlugins = [...(options.remarkPlugins || []), remarkGfm];
+        options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkGfm];
+        options.development = false;
         return options;
       },
     });

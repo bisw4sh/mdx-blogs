@@ -1,1 +1,4 @@
 GET http://localhost:5555/api/posts
+
+###
+GET http://localhost:5555/api/posts/hello

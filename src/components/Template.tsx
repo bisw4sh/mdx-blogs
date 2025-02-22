@@ -2,7 +2,8 @@ import { MDXProvider } from "@mdx-js/react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useSearchParams } from "react-router-dom";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState, useMemo } from "react";
+import { getMDXComponent } from "mdx-bundler/client";
 
 const posts = import.meta.glob("../markdowns/*.mdx");
 
@@ -16,7 +17,6 @@ interface CodeProps {
   children?: React.ReactNode;
 }
 
-// Custom syntax highlighting component
 function CodeBlock({ className, children, ...props }: CodeProps) {
   const match = /language-(\w+)/.exec(className || "");
   return match ? (
@@ -39,32 +39,70 @@ function CodeBlock({ className, children, ...props }: CodeProps) {
 const Template = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [apiPosts, setApiPosts] = useState<string[]>([]);
-  const [fetchedPost, setFetchedPost] = useState<string | null>(null);
+  const [fetchedPost, setFetchedPost] = useState<{
+    code: string;
+    frontmatter?: Record<string, string>;
+  } | null>(null);
   const blogSlug = searchParams.get("blogs");
 
+  // Fetch list of available posts
   useEffect(() => {
-    fetch("/api/posts")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("/api/posts");
+        const data = await response.json();
         if (data.posts && Array.isArray(data.posts)) {
           setApiPosts(data.posts);
         }
-      })
-      .catch((err) => console.error("Error fetching API posts:", err));
+      } catch (error) {
+        console.error("Error fetching the posts:", error);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
+  const MDXContent = useMemo(() => {
+    if (fetchedPost?.code) {
+      try {
+        // This evaluates the code and returns a React component
+        return getMDXComponent(fetchedPost.code);
+      } catch (error) {
+        console.error("Error creating MDX component:", error);
+        return null;
+      }
+    }
+    return null;
+  }, [fetchedPost]);
+
+  // Fetch individual post content when needed
   useEffect(() => {
-    if (blogSlug && !postLinks.some((post) => post.name === blogSlug) && !apiPosts.includes(blogSlug)) {
-      fetch(`/api/posts/${blogSlug}`)
-        .then((res) => res.text())
-        .then((data) => setFetchedPost(data))
-        .catch((err) => console.error("Error fetching blog post:", err));
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`/api/posts/${blogSlug}`);
+        const data = await response.json();
+        setFetchedPost(data);
+      } catch (error) {
+        console.error("Error fetching blog post:", error);
+      }
+    };
+
+    if (
+      blogSlug &&
+      !postLinks.some((post) => post.name === blogSlug) &&
+      apiPosts.includes(blogSlug)
+    ) {
+      fetchPost();
     }
   }, [blogSlug, apiPosts]);
 
   const allPosts = [
     ...postLinks,
-    ...apiPosts.map((name) => ({ name, path: `/blog/${name}`, importer: null })),
+    ...apiPosts.map((name) => ({
+      name,
+      path: `/blog/${name}`,
+      importer: null,
+    })),
   ];
 
   const selectedPost = postLinks.find((post) => post.name === blogSlug);
@@ -92,20 +130,26 @@ const Template = () => {
         ))}
       </div>
 
-      <MDXProvider>
+      <MDXProvider components={{ code: CodeBlock }}>
         <Suspense
           fallback={
             <div className="flex w-full flex-col gap-4">
               {Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className="skeleton h-4 w-full" />
+                <div
+                  key={`skeleton-${
+                    // biome-ignore lint/suspicious/noArrayIndexKey: right way
+                    index
+                  }`}
+                  className="skeleton h-4 w-full"
+                />
               ))}
             </div>
           }
         >
           {BlogComponent ? (
             <BlogComponent components={{ code: CodeBlock }} />
-          ) : fetchedPost ? (
-            <div dangerouslySetInnerHTML={{ __html: fetchedPost }} />
+          ) : MDXContent ? (
+            <MDXContent components={{ code: CodeBlock }} />
           ) : null}
         </Suspense>
       </MDXProvider>
