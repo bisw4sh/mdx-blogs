@@ -7,7 +7,7 @@ export const save_mdx = async (req: Request, res: Response) => {
   try {
     const { markdown, filename } = req.body;
 
-    await writeFile(path.join(__dirname, "files", `${filename}.mdx`), markdown);
+    await writeFile(path.join(__dirname, "mdx-files", `${filename}.mdx`), markdown);
 
     res.status(201).json({ message: "successfully created" });
   } catch (error) {
