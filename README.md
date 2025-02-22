@@ -4,16 +4,15 @@
 
 1. Install dependencies:
 
-  ```sh
-  pnpm install
-  ```
+```sh
+pnpm install
+```
 
 2. Start the development server:
 
-  ```sh
-  pnpm dev
-  ```
-
+```sh
+pnpm dev
+```
 
 # Understanding the use of mdx with toolset
 
@@ -71,4 +70,45 @@ export default defineConfig(async () => {
 });
 ```
 
-4. Now to add code block syntax highlighting, we need rehype [guide](https://mdxjs.com/guides/syntax-highlighting/).
+4. Now to add code block syntax highlighting, it could be done in 2 ways; runtime and compile time.
+
+- Compile time : we need `rehype` [guide](https://mdxjs.com/guides/syntax-highlighting/).
+- Run time : `react-syntax-highlighter`
+
+- For `react-syntax-highlighter`
+
+```ts
+interface CodeProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+// Custom syntax highlighting component
+function CodeBlock({ className, children, ...props }: CodeProps) {
+  const match = /language-(\w+)/.exec(className || "");
+  return match ? (
+    <SyntaxHighlighter
+      language={match[1]}
+      PreTag="div"
+      {...props}
+      style={atelierCaveDark}
+      showLineNumbers
+    >
+      {String(children).trim()}
+    </SyntaxHighlighter>
+  ) : (
+    <code className={className} {...props}>
+      {children}
+    </code>
+  );
+}
+```
+
+```ts
+<BlogComponent components={{ code: CodeBlock }} />
+```
+
+> Above guide is to have syntax highlighting(runtime), gfm, mdx in react.
+
+### MDX from node.js (remote location)
+
