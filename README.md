@@ -2,16 +2,18 @@
 
 ## Getting Started
 
-1. Install dependencies:
+### Install dependencies:
+
+1. Terminal 1
 
 ```sh
-pnpm install
+pnpm i && pnpm dev
 ```
 
-2. Start the development server:
+2. Terminal 2
 
 ```sh
-pnpm dev
+cd backend && pnpm i && pnpm dev
 ```
 
 # Understanding the use of mdx with toolset
@@ -112,3 +114,48 @@ function CodeBlock({ className, children, ...props }: CodeProps) {
 
 ### MDX from node.js (remote location)
 
+- We need to evaluate the markdown at runtime, could be done with [showdown](https://github.com/showdownjs/showdown) in nodejs backend. We could also use [mdx-bundler](https://github.com/kentcdodds/mdx-bundler) by Kent C. Dodds. We can now use same files for frontend & backend.
+
+- Backend
+
+```ts
+const filePath = path.join(
+  __dirname,
+  "public",
+  "mdx-files",
+  `${req.params.slug}.mdx`
+);
+const mdxContent = readFileSync(filePath, "utf-8");
+
+const { code, frontmatter } = await bundleMDX({
+  source: mdxContent,
+  mdxOptions(options) {
+    options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkGfm];
+    options.development = false;
+    return options;
+  },
+});
+
+res.json({ code, frontmatter });
+```
+
+- Frontend
+
+```ts
+const MDXContent = useMemo(() => {
+  if (fetchedPost?.code) {
+    try {
+      // This evaluates the code and returns a React component
+      return getMDXComponent(fetchedPost.code);
+    } catch (error) {
+      console.error("Error creating MDX component:", error);
+      return null;
+    }
+  }
+  return null;
+}, [fetchedPost]);
+```
+
+```ts
+<MDXContent components={{ code: CodeBlock }} />
+```
