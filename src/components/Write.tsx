@@ -14,7 +14,7 @@ const Write = ({
       theme="snow"
       value={value}
       onChange={setValue}
-      className="w-full h-[10rem] rounded-md"
+      className="w-full h-[32rem] rounded-md"
     />
   );
 };

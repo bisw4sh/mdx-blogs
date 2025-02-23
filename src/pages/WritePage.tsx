@@ -1,3 +1,4 @@
+import type React from "react";
 import { useState } from "react";
 import { redirect, Form, useSubmit } from "react-router-dom";
 import Write from "../components/Write";
@@ -55,32 +56,41 @@ const WritePage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex justify-between py-10">
-      <section className="flex flex-col justify-start items-start flex-1 p-[1rem]">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row">
+      <section className="w-full lg:w-1/2 p-4 border-b lg:border-b-0 lg:border-r flex flex-col">
         <Form
           method="post"
-          className="flex flex-col justify-start items-start flex-1 p-[1rem]"
+          className="flex-grow flex flex-col"
           onSubmit={handleSubmit}
         >
-          <input
-            type="text"
-            placeholder="Type filename here"
-            name="fileName"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
-            className="input input-bordered w-full my-2"
-          />
-          {filenameError && <p className="text-red-500">{filenameError}</p>}
-          <Write value={value} setValue={setValue} />
-          <button type="submit" className="btn btn-outline mt-[4rem]">
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Type filename here"
+              name="fileName"
+              value={filename}
+              onChange={(e) => setFilename(e.target.value)}
+              className="input input-bordered w-full"
+            />
+            {filenameError && (
+              <p className="text-error text-sm mt-1">{filenameError}</p>
+            )}
+          </div>
+          <div className="flex-grow mb-4 h-[calc(100vh-200px)] lg:h-[calc(100vh-170px)]">
+            <Write value={value} setValue={setValue} />
+          </div>
+          <button type="submit" className="btn btn-primary w-full">
             Submit
           </button>
         </Form>
       </section>
-      <section
-        dangerouslySetInnerHTML={{ __html: value }}
-        className="prose prose-a:text-blue-600 prose-md max-w-none w-full flex-1 p-[1rem] border-[1px] rounded-md"
-      />
+      <section className="w-full lg:w-1/2 p-4 flex flex-col">
+        <h2 className="text-xl font-bold mb-2">Preview</h2>
+        <div
+          dangerouslySetInnerHTML={{ __html: value }}
+          className="prose prose-sm max-w-none flex-grow overflow-auto border rounded-box p-4"
+        />
+      </section>
     </div>
   );
 };
