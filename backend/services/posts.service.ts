@@ -11,6 +11,22 @@ export class PostService {
     return path.join(__dirname, "public", "mdx-files");
   }
 
+  static async checkPostBySlug(slug: string): Promise<{ fileExist: boolean }> {
+    const mdxDir = this.getMDXDir();
+    const files = readdirSync(mdxDir);
+
+    const fileExist = files.some(
+      (file) => file === `${slug}.mdx` || file === `${slug}.md`
+    );
+
+    if (fileExist) {
+      console.log("it was here");
+      throw AppError.conflict("File already exists");
+    }
+
+    return { fileExist };
+  }
+
   static async getAllPosts(): Promise<string[]> {
     try {
       const mdxDir = this.getMDXDir();
@@ -63,6 +79,29 @@ export class PostService {
       return { code, frontmatter };
     } catch (error) {
       throw AppError.internalServerError("Failed to save MDX file");
+    }
+  }
+
+  static async processMDX(
+    content: string,
+    fileName: string
+  ): Promise<MDXContent> {
+    try {
+      const filePath = path.join(this.getMDXDir(), `${fileName}.mdx`);
+      writeFileSync(filePath, content);
+
+      const { code, frontmatter } = await bundleMDX({
+        source: content,
+        mdxOptions(options) {
+          options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkGfm];
+          options.development = false;
+          return options;
+        },
+      });
+
+      return { code, frontmatter };
+    } catch (error) {
+      throw AppError.internalServerError("Failed to process MDX content");
     }
   }
 }

@@ -11,3 +11,7 @@ GET http://localhost:5555/api/posts/hello
 curl -X POST "http://localhost:5555/api/posts/upload" \
   -H "Content-Type: multipart/form-data" \
   -F "file=@/home/bisw4sh/Desktop/mdx-blogs/src/markdowns/google-oauth2.0.mdx"
+
+### Check if file already exists
+@fileName=hello
+GET http://localhost:5555/api/posts/check/{{fileName}}
