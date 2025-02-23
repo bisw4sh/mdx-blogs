@@ -21,7 +21,7 @@ const errorHandler = (
 
   if (error instanceof multer.MulterError) {
     return res.status(400).json({
-      message: "File Size Exceeded. Please upload within 8MB",
+      message: "File Size Exceeded. Please upload within 10MB",
       details: error.message,
     });
   }

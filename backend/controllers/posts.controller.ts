@@ -58,4 +58,16 @@ export class PostController {
     });
     return res.status(response.statusCode).json(response);
   }
+
+  static async uploadPostAsText(req: Request, res: Response) {
+    const { content, fileName } = req.body;
+    if (!content || !fileName) {
+      throw AppError.badRequest("No content or fileName provided");
+    }
+
+    const post = await PostService.processMDX(content, fileName);
+
+    const response = AppResponse.created("Post uploaded successfully", post);
+    return res.status(response.statusCode).json(response);
+  }
 }
