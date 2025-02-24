@@ -4,11 +4,11 @@ import multer from "multer";
 
 const errorHandler = (
   error: Error,
-  req: Request,
+  _req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
-): Response<any> => {
+): Response => {
   console.log("error", error);
 
   if (error instanceof AppError) {
