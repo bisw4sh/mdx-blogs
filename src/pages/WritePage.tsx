@@ -2,6 +2,8 @@ import type React from "react";
 import { useState } from "react";
 import { redirect, Form, useSubmit } from "react-router-dom";
 import Write from "../components/Write";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const action = async ({ request }: { request: Request }) => {
@@ -77,7 +79,7 @@ const WritePage = () => {
             )}
           </div>
           <div className="flex-grow mb-4 h-[calc(100vh-200px)] lg:h-[calc(100vh-170px)]">
-            <Write value={value} setValue={setValue} />
+            <Write setValue={setValue} />
           </div>
           <button type="submit" className="btn btn-primary w-full">
             Submit
@@ -86,10 +88,9 @@ const WritePage = () => {
       </section>
       <section className="w-full lg:w-1/2 p-4 flex flex-col">
         <h2 className="text-xl font-bold mb-2">Preview</h2>
-        <div
-          dangerouslySetInnerHTML={{ __html: value }}
-          className="prose prose-sm max-w-none flex-grow overflow-auto border rounded-box p-4"
-        />
+        <div className="prose prose-sm max-w-none flex-grow overflow-auto border rounded-box p-4">
+          <Markdown remarkPlugins={[remarkGfm]}>{value}</Markdown>
+        </div>
       </section>
     </div>
   );
