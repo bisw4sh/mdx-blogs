@@ -9,6 +9,5 @@ export class HealthController {
       healthData,
     });
     return res.status(response.statusCode).json(response);
-    
   }
 }
