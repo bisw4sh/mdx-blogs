@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { PostService } from "@/services/posts.service.js";
 import { AppResponse } from "@/utils/appResponse.util.js";
 import { AppError } from "@/utils/appError.util.js";
@@ -10,7 +10,8 @@ export class PostController {
     const response = AppResponse.success("Posts retrieved successfully", {
       posts,
     });
-    return res.status(response.statusCode).json(response);
+    res.status(response.statusCode).json(response);
+    return;
   }
 
   static async getPostBySlug(req: Request, res: Response) {
@@ -21,26 +22,20 @@ export class PostController {
 
     const post = await PostService.getPostBySlug(slug);
     const response = AppResponse.success("Post retrieved successfully", post);
-    return res.status(response.statusCode).json(response);
+    res.status(response.statusCode).json(response);
+    return;
   }
 
-  static async checkPostBySlug(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const { slug } = req.params;
-      if (!slug) {
-        throw AppError.badRequest("Slug is required");
-      }
-
-      const fileExist = await PostService.checkPostBySlug(slug);
-      const response = AppResponse.success("Checked file existence", fileExist);
-      return res.status(response.statusCode).json(response);
-    } catch (error) {
-      next(error);
+  static async checkPostBySlug(req: Request, res: Response) {
+    const { slug } = req.params;
+    if (!slug) {
+      throw AppError.badRequest("Slug is required");
     }
+
+    const fileExist = await PostService.checkPostBySlug(slug);
+    const response = AppResponse.success("Checked file existence", fileExist);
+    res.status(response.statusCode).json(response);
+    return;
   }
 
   static async uploadPost(req: Request, res: Response) {
@@ -56,7 +51,8 @@ export class PostController {
       fileName: file.filename,
       ...post,
     });
-    return res.status(response.statusCode).json(response);
+    res.status(response.statusCode).json(response);
+    return;
   }
 
   static async uploadPostAsText(req: Request, res: Response) {
@@ -68,6 +64,7 @@ export class PostController {
     const post = await PostService.processMDX(content, fileName);
 
     const response = AppResponse.created("Post uploaded successfully", post);
-    return res.status(response.statusCode).json(response);
+    res.status(response.statusCode).json(response);
+    return;
   }
 }
