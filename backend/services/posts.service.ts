@@ -4,11 +4,11 @@ import path from "node:path";
 import remarkGfm from "remark-gfm";
 import { AppError } from "@/utils/appError.util.js";
 import { MDXContent } from "@/types/mdx.types.js";
-import { __dirname } from "@/utils/getPath.util.js";
+import { rootDir } from "@/utils/getPath.util.js";
 
 export class PostService {
   private static getMDXDir() {
-    return path.join(__dirname, "public", "mdx-files");
+    return path.join(rootDir, "public", "mdx-files");
   }
 
   static async checkPostBySlug(slug: string): Promise<{ fileExist: boolean }> {

@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import multer from "multer";
-import { __dirname } from "@/utils/getPath.util.js";
+import { rootDir } from "@/utils/getPath.util.js";
 import { AppError } from "@/utils/appError.util.js";
 
-const mdxDir = path.join(__dirname, "public", "mdx-files");
+const mdxDir = path.join(rootDir, "public", "mdx-files");
 
 if (!fs.existsSync(mdxDir)) {
   fs.mkdirSync(mdxDir, { recursive: true });
