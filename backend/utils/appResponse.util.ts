@@ -1,6 +1,6 @@
 import { HttpStatusCode } from "@/constants/http.constants.js";
 
-export class AppResponse<T = any> {
+export class AppResponse<T = void> {
   statusCode: number;
   status: string;
   message: string;

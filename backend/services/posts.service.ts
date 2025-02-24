@@ -20,7 +20,6 @@ export class PostService {
     );
 
     if (fileExist) {
-      console.log("it was here");
       throw AppError.conflict("File already exists");
     }
 

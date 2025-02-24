@@ -10,8 +10,7 @@ export class PostController {
     const response = AppResponse.success("Posts retrieved successfully", {
       posts,
     });
-    res.status(response.statusCode).json(response);
-    return;
+    return res.status(response.statusCode).json(response);
   }
 
   static async getPostBySlug(req: Request, res: Response) {
@@ -22,8 +21,7 @@ export class PostController {
 
     const post = await PostService.getPostBySlug(slug);
     const response = AppResponse.success("Post retrieved successfully", post);
-    res.status(response.statusCode).json(response);
-    return;
+    return res.status(response.statusCode).json(response);
   }
 
   static async checkPostBySlug(req: Request, res: Response) {
@@ -34,8 +32,7 @@ export class PostController {
 
     const fileExist = await PostService.checkPostBySlug(slug);
     const response = AppResponse.success("Checked file existence", fileExist);
-    res.status(response.statusCode).json(response);
-    return;
+    return res.status(response.statusCode).json(response);
   }
 
   static async uploadPost(req: Request, res: Response) {
@@ -51,8 +48,7 @@ export class PostController {
       fileName: file.filename,
       ...post,
     });
-    res.status(response.statusCode).json(response);
-    return;
+    return res.status(response.statusCode).json(response);
   }
 
   static async uploadPostAsText(req: Request, res: Response) {
@@ -64,7 +60,6 @@ export class PostController {
     const post = await PostService.processMDX(content, fileName);
 
     const response = AppResponse.created("Post uploaded successfully", post);
-    res.status(response.statusCode).json(response);
-    return;
+    return res.status(response.statusCode).json(response);
   }
 }

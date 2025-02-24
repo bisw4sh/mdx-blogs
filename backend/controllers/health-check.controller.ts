@@ -8,7 +8,7 @@ export class HealthController {
     const response = AppResponse.success("Health Checked", {
       healthData,
     });
-    res.status(response.statusCode).json(response);
-    return;
+    return res.status(response.statusCode).json(response);
+    
   }
 }
