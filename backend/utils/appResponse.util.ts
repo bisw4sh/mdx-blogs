@@ -1,4 +1,5 @@
 import { HttpStatusCode } from "@/constants/http.constants.js";
+import { z } from "zod";
 
 export class AppResponse<T = void> {
   statusCode: number;
@@ -28,3 +29,11 @@ export class AppResponse<T = void> {
     return new AppResponse<T>(message, HttpStatusCode.OK, data);
   }
 }
+
+export const AppResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
+  z.object({
+    success: z.boolean(),
+    message: z.string(),
+    responseObject: dataSchema.optional(),
+    statusCode: z.number(),
+  });
