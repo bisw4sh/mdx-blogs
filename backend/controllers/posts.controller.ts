@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { PostService } from "@/services/posts.service.js";
 import { AppResponse } from "@/utils/appResponse.util.js";
 import { AppError } from "@/utils/appError.util.js";
