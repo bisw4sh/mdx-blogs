@@ -58,7 +58,7 @@ const WritePage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row">
+    <div className="h-[calc(100vh-4rem)] w-full flex flex-col lg:flex-row">
       <section className="w-full lg:w-1/2 p-4 border-b lg:border-b-0 lg:border-r flex flex-col">
         <Form
           method="post"

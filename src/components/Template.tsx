@@ -118,18 +118,20 @@ const Template = () => {
 
   return (
     <div className="flex flex-col justify-start items-start space-y-3 isolate-tailwind prose prose-a:text-blue-600 prose-lg max-w-none lg:w-2/3">
-      <div className="space-x-4 py-4">
-        {allPosts.map(({ name }) => (
-          <button
-            key={name}
-            type="button"
-            className="link link-info"
-            onClick={() => setSearchParams({ blogs: name })}
-          >
-            {name}
-          </button>
-        ))}
-      </div>
+      {!blogSlug && (
+        <div className="space-x-4 py-4">
+          {allPosts.map(({ name }) => (
+            <button
+              key={name}
+              type="button"
+              className="link link-info"
+              onClick={() => setSearchParams({ blogs: name })}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
 
       <MDXProvider components={{ code: CodeBlock }}>
         <Suspense
