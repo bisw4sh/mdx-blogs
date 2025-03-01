@@ -2,16 +2,16 @@ import { HttpStatusCode } from "@/constants/http.constants.js";
 import { z } from "zod";
 
 export class AppResponse<T = void> {
+  success: boolean;
   statusCode: number;
-  status: string;
   message: string;
   data?: T;
 
   constructor(message: string, statusCode: number, data?: T) {
     this.statusCode = statusCode;
-    this.status = `${statusCode}`.startsWith("2") ? "success" : "error";
     this.message = message;
     this.data = data;
+    this.success = true;
   }
 
   static success<T>(message: string, data?: T) {
@@ -34,6 +34,7 @@ export const AppResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
   z.object({
     success: z.boolean(),
     message: z.string(),
-    responseObject: dataSchema.optional(),
+    data: dataSchema.optional(),
     statusCode: z.number(),
+    isOperational: z.boolean().optional(),
   });
