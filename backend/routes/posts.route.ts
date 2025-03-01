@@ -1,11 +1,15 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { z } from "zod";
 import { createApiResponse } from "@/open-api/openAPIResponseBuilders.js";
 
 import { Router } from "express";
 import { PostController } from "@/controllers/posts.controller.js";
 import { mdxUpload } from "@/config/multer.config.js";
 import { catchAsync } from "@/utils/catchAsync.util.js";
+import {
+  getPostNamesSchema,
+  mdxPostData,
+  postExistsOrNot,
+} from "@/schemas/posts.schemas.js";
 
 export const postsRegistry = new OpenAPIRegistry();
 const router: Router = Router();
@@ -16,9 +20,7 @@ postsRegistry.registerPath({
   path: prefix,
   tags: ["Posts"],
   responses: createApiResponse(
-    z.object({
-      name: z.string().optional(),
-    }),
+    getPostNamesSchema,
     "receives the name of the posts"
   ),
 });
@@ -40,12 +42,7 @@ postsRegistry.registerPath({
       description: "The unique slug of the post to retrieve",
     },
   ],
-  responses: createApiResponse(
-    z.object({
-      name: z.string().optional(),
-    }),
-    "receives the post by slug"
-  ),
+  responses: createApiResponse(mdxPostData, "receives the post by slug"),
 });
 
 router.get("/:slug", catchAsync(PostController.getPostBySlug));
@@ -65,9 +62,7 @@ postsRegistry.registerPath({
     },
   ],
   responses: createApiResponse(
-    z.object({
-      name: z.string().optional(),
-    }),
+    postExistsOrNot,
     "return if the post name already or not"
   ),
 });
@@ -96,12 +91,7 @@ postsRegistry.registerPath({
       },
     },
   },
-  responses: createApiResponse(
-    z.object({
-      name: z.string().optional(),
-    }),
-    "route to upload the mdx file"
-  ),
+  responses: createApiResponse(mdxPostData, "route to upload the mdx file"),
 });
 
 router.post(
@@ -137,9 +127,7 @@ postsRegistry.registerPath({
     },
   },
   responses: createApiResponse(
-    z.object({
-      name: z.string().optional(),
-    }),
+    mdxPostData,
     "return if the post in json format is successfully uploaded"
   ),
 });
