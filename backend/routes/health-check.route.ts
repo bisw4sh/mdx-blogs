@@ -13,12 +13,20 @@ healthCheckRegistry.registerPath({
   method: "get",
   path: prefix,
   tags: ["Health Check"],
-  responses: createApiResponse(
-    z.object({
-      name: z.string().optional(),
-    }),
-    "checking if server is running or not"
-  ),
+  responses: {
+    ...createApiResponse(
+      z.object({
+        healthData: z.string(),
+      }),
+      "checking if server is running or not"
+    ),
+    ...createApiResponse(
+      z.null(),
+      "Error occurred while checking server health",
+      400
+    ),
+    ...createApiResponse(z.null(), "Server error occurred", 500),
+  },
 });
 
 router.get("/", catchAsync(HealthController.check));
