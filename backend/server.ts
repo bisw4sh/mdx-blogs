@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.set("trust proxy", true);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/public", express.static(path.join(rootDir, "./public")));
+app.use("/api/public", express.static(path.join(rootDir, "./public")));
 
 app.use(openAPIRouter);
 app.use("/api/health-check", healthCheckRoutes);

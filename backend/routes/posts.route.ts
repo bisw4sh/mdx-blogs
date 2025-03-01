@@ -29,6 +29,17 @@ postsRegistry.registerPath({
   method: "get",
   path: `${prefix}/{slug}`,
   tags: ["Posts"],
+  parameters: [
+    {
+      name: "slug",
+      in: "path",
+      required: true,
+      schema: {
+        type: "string",
+      },
+      description: "The unique slug of the post to retrieve",
+    },
+  ],
   responses: createApiResponse(
     z.object({
       name: z.string().optional(),
@@ -43,6 +54,16 @@ postsRegistry.registerPath({
   method: "get",
   path: `${prefix}/check/{slug}`,
   tags: ["Posts"],
+  parameters: [
+    {
+      name: "slug",
+      in: "path",
+      required: true,
+      schema: {
+        type: "string",
+      },
+    },
+  ],
   responses: createApiResponse(
     z.object({
       name: z.string().optional(),
@@ -56,6 +77,25 @@ postsRegistry.registerPath({
   method: "post",
   path: `${prefix}/upload`,
   tags: ["Posts"],
+  request: {
+    body: {
+      content: {
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            properties: {
+              mdx: {
+                type: "string",
+                format: "binary",
+                description: "MDX file to upload (.mdx)",
+              },
+            },
+            required: ["mdx"],
+          },
+        },
+      },
+    },
+  },
   responses: createApiResponse(
     z.object({
       name: z.string().optional(),
@@ -74,13 +114,36 @@ postsRegistry.registerPath({
   method: "post",
   path: `${prefix}/upload/json`,
   tags: ["Posts"],
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              content: {
+                type: "string",
+                description: "The MDX content as text",
+              },
+              fileName: {
+                type: "string",
+                description: "Name for the file to be saved",
+              },
+            },
+            required: ["content", "fileName"],
+          },
+        },
+      },
+    },
+  },
   responses: createApiResponse(
     z.object({
       name: z.string().optional(),
     }),
-    "return if the post in json format"
+    "return if the post in json format is successfully uploaded"
   ),
 });
+
 router.post("/upload/json", catchAsync(PostController.uploadPostAsText));
 
 export default router;
