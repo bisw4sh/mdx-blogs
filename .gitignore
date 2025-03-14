@@ -25,3 +25,4 @@ dist-ssr
 *.md
 /backend/**/*.mdx
 .env
+backend/test-report.json
