@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import { AppError } from "@/utils/appError.util.js";
 import { MDXContent } from "@/types/mdx.types.js";
 import { rootDir } from "@/utils/getPath.util.js";
+import { logger } from "@/config/winston.config.js";
 
 export class PostService {
   private static getMDXDir() {
@@ -33,6 +34,7 @@ export class PostService {
         .filter((file) => file.endsWith(".mdx"))
         .map((file) => file.replace(".mdx", ""));
     } catch (error) {
+      logger.error("failed to fetch mdx files");
       throw AppError.internalServerError("Failed to fetch MDX files");
     }
   }
@@ -53,6 +55,7 @@ export class PostService {
 
       return { code, frontmatter };
     } catch (error) {
+      logger.error("Failed to process MDX content");
       if (error instanceof AppError) throw error;
       throw AppError.internalServerError("Failed to process MDX content");
     }
@@ -77,6 +80,7 @@ export class PostService {
 
       return { code, frontmatter };
     } catch (error) {
+      logger.error("Failed to save MDX file");
       throw AppError.internalServerError("Failed to save MDX file");
     }
   }
@@ -100,6 +104,7 @@ export class PostService {
 
       return { code, frontmatter };
     } catch (error) {
+      logger.error("Failed to process MDX content");
       throw AppError.internalServerError("Failed to process MDX content");
     }
   }

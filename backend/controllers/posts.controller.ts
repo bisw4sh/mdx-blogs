@@ -3,9 +3,11 @@ import { PostService } from "@/services/posts.service.js";
 import { AppResponse } from "@/utils/appResponse.util.js";
 import { AppError } from "@/utils/appError.util.js";
 import { readFileSync } from "fs";
+import { logger } from "@/config/winston.config.js";
 
 export class PostController {
   static async getAllPosts(_req: Request, res: Response) {
+    logger.http("getAllPosts");
     const posts = await PostService.getAllPosts();
     const response = AppResponse.success("Posts retrieved successfully", {
       posts,
@@ -14,6 +16,7 @@ export class PostController {
   }
 
   static async getPostBySlug(req: Request, res: Response) {
+    logger.http("getPostBySlug");
     const { slug } = req.params;
     if (!slug) {
       throw AppError.badRequest("Slug is required");
@@ -25,6 +28,7 @@ export class PostController {
   }
 
   static async checkPostBySlug(req: Request, res: Response) {
+    logger.http("checkPostBySlug");
     const { slug } = req.params;
     if (!slug) {
       throw AppError.badRequest("Slug is required");
@@ -36,6 +40,7 @@ export class PostController {
   }
 
   static async uploadPost(req: Request, res: Response) {
+    logger.http("uploadPost");
     const file = req.file;
     if (!file) {
       throw AppError.badRequest("No file uploaded");
@@ -52,6 +57,7 @@ export class PostController {
   }
 
   static async uploadPostAsText(req: Request, res: Response) {
+    logger.http("uploadPostAsText");
     const { content, fileName } = req.body;
     if (!content || !fileName) {
       throw AppError.badRequest("No content or fileName provided");
