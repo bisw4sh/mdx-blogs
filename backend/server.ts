@@ -1,10 +1,10 @@
 import express from "express";
 import path from "node:path";
-import postRoutes from "@/routes/posts.route.js";
-import healthCheckRoutes from "@/routes/health-check.route.js";
 import errorHandler from "@/middleware/errorHandler.middleware.js";
 import { rootDir } from "@/utils/getPath.util.js";
 import { openAPIRouter } from "@/open-api/openAPIRouter.js";
+import { routesHandler } from "./middleware/routes.middleware.js";
+import { logger } from "@/config/winston.config.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,13 +15,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/public", express.static(path.join(rootDir, "./public")));
 
 app.use(openAPIRouter);
-app.use("/api/health-check", healthCheckRoutes);
-app.use("/api/posts", postRoutes);
+routesHandler(app);
 app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`Swagger - APIs @ http://localhost:${PORT}/api-docs`);
+  logger.info(`Server is running on http://localhost:${PORT}`);
+  logger.info(`Swagger - APIs @ http://localhost:${PORT}/api-docs`);
 });
 
 /** Handle Uncaught Exceptions (Sync Errors) */
